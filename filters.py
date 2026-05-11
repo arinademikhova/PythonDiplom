@@ -1,11 +1,10 @@
 import streamlit as st
 from datetime import datetime, timedelta
 from config import DEFAULT_DAYS_BACK
-from bd import get_list_hotels, get_list_sections, get_list_service_types
-
+from bd import get_list_hotels, get_list_sections, get_list_service_types, load_fund_data, load_services_data
 
 def render_and_load_data():
-    #формируем вкладку фильтры
+
     if "filters_applied" not in st.session_state:
         st.session_state.filters_applied = False
         st.session_state.date_from = datetime.now() - timedelta(days=DEFAULT_DAYS_BACK)
@@ -13,6 +12,8 @@ def render_and_load_data():
         st.session_state.hotel = "Все"
         st.session_state.sections = []
         st.session_state.service_types = []
+        st.session_state.df_fund = None
+        st.session_state.df_services = None
 
     with st.sidebar:
         st.header("🔍 Фильтры")
@@ -32,14 +33,22 @@ def render_and_load_data():
         col1, col2 = st.columns(2)
         with col1:
             if st.button("Применить фильтры", type="primary"):
-                #сохраняем выбранные значения в session_state
+                # Сохраняем выбранные значения
                 st.session_state.date_from = date_from
                 st.session_state.date_to = date_to
                 st.session_state.hotel = hotel
                 st.session_state.sections = sections
                 st.session_state.service_types = service_types
                 st.session_state.filters_applied = True
-                st.success("✅ Фильтры применены, но данные пока не загружаются (следующий шаг).")
+
+                # Загружаем данные
+                with st.spinner("Загрузка данных..."):
+                    st.session_state.df_fund = load_fund_data(
+                        date_from, date_to, hotel, sections
+                    )
+                    st.session_state.df_services = load_services_data(
+                        date_from, date_to, hotel, sections, service_types
+                    )
                 st.rerun()
         with col2:
             if st.button("Сбросить"):
@@ -49,4 +58,6 @@ def render_and_load_data():
                 st.session_state.hotel = "Все"
                 st.session_state.sections = []
                 st.session_state.service_types = []
+                st.session_state.df_fund = None
+                st.session_state.df_services = None
                 st.rerun()
