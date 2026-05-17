@@ -55,6 +55,8 @@ def load_fund_data(date_from, date_to, hotel=None, sections=None):
         JOIN sections s ON r.section_id = s.section_id
         JOIN hotels h ON s.hotel_id = h.hotel_id
         WHERE fr.reserv_date BETWEEN ? AND ?
+            AND r.enable = 1
+            AND r.deleted = 0
     """
     params = [from_ms, to_ms]
     if hotel and hotel != "Все":
@@ -93,6 +95,8 @@ def load_services_data(date_from, date_to, hotel=None, sections=None, service_ty
         JOIN sections s ON serv.section_id = s.section_id
         JOIN hotels h ON s.hotel_id = h.hotel_id
         WHERE sr.reserv_date BETWEEN ? AND ?
+            AND serv.enable = 1
+            AND serv.deleted = 0
     """
     params = [from_ms, to_ms]
     if hotel and hotel != "Все":
@@ -111,8 +115,14 @@ def load_services_data(date_from, date_to, hotel=None, sections=None, service_ty
     conn.close()
     return df
 
-def get_total_rooms_count():
+#def get_total_rooms_count():
     conn = get_connection()
     total = pd.read_sql("SELECT COUNT(*) as cnt FROM rooms WHERE deleted = 0", conn).iloc[0]['cnt']
+    conn.close()
+    return total
+
+def get_total_rooms_count():
+    conn = get_connection()
+    total = pd.read_sql("SELECT COUNT(*) as cnt FROM rooms WHERE deleted = 0 AND enable = 1", conn).iloc[0]['cnt']
     conn.close()
     return total
