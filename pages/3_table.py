@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from io import BytesIO
+from navigation import render_navigation
 
 st.header("📋 Детальный отчёт по бронированиям")
 
@@ -50,3 +51,5 @@ with st.expander("📥 Экспорт данных"):
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         table_df[final_columns].to_excel(writer, index=False, sheet_name='Report')
     st.download_button("Скачать как Excel", output.getvalue(), "report.xlsx")
+
+render_navigation('table')

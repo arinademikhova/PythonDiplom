@@ -1,6 +1,7 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
+from navigation import render_navigation
 
 st.header("📈 Аналитические графики")
 
@@ -77,3 +78,5 @@ if not df_all.empty:
     st.plotly_chart(fig, use_container_width=True)
 else:
     st.info("Нет данных для динамики")
+
+render_navigation('plots')

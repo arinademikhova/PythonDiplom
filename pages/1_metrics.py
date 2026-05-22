@@ -1,7 +1,7 @@
-# pages/1_metrics.py
 import streamlit as st
 import pandas as pd
 from bd import get_total_rooms_count
+from navigation import render_navigation
 
 st.header("📊 Ключевые показатели")
 
@@ -55,3 +55,5 @@ with col4:
     #st.metric("Факт. поступления (₽)", f"{actual_payments:,.0f}")
 
 st.metric("Факт. поступления (₽)", f"{actual_payments:,.0f}")
+
+render_navigation('metrics')

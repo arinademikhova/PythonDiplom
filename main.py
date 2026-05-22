@@ -14,4 +14,4 @@ if st.session_state.get("df_fund") is not None:
 else:
     st.info("Выберите фильтры в боковой панели и нажмите «Применить фильтры».")
 
-render_navigation()
+render_navigation('main')
