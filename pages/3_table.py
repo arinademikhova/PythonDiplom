@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from io import BytesIO
 
 st.header("📋 Детальный отчёт по бронированиям")
 
@@ -40,3 +41,12 @@ table_df = table_df.rename(columns={
 final_columns = ['ID', 'Дата', 'Объект/Услуга', 'Стоимость (₽)', 'Оплачено (₽)', 'Статус оплаты']
 
 st.dataframe(table_df[final_columns], use_container_width=True, height=400)
+
+with st.expander("📥 Экспорт данных"):
+    csv_data = table_df[final_columns].to_csv(index=False).encode('utf-8')
+    st.download_button("Скачать как CSV", csv_data, "report.csv", "text/csv")
+
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        table_df[final_columns].to_excel(writer, index=False, sheet_name='Report')
+    st.download_button("Скачать как Excel", output.getvalue(), "report.xlsx")
