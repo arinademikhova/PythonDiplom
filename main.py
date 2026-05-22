@@ -11,7 +11,7 @@ render_and_load_data()
 
 if st.session_state.get("df_fund") is not None:
     st.success(f"Данные загружены! Размещение: {len(st.session_state.df_fund)} записей, Услуги: {len(st.session_state.df_services)} записей")
+    render_navigation('main')
 else:
     st.info("Выберите фильтры в боковой панели и нажмите «Применить фильтры».")
 
-render_navigation('main')

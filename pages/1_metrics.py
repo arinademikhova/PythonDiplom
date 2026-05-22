@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 from bd import get_total_rooms_count
 from navigation import render_navigation
+from filters import render_and_load_data
+
+render_and_load_data()
 
 st.header("📊 Ключевые показатели")
 
@@ -14,6 +17,7 @@ df_services = st.session_state.df_services
 
 if df_fund.empty and df_services.empty:
     st.warning("Нет данных за выбранный период.")
+    render_navigation('metrics')
     st.stop()
 
 df_all = pd.concat([df_fund, df_services], ignore_index=True)
