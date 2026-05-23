@@ -23,7 +23,7 @@ if df_fund.empty and df_services.empty:
 df_all = pd.concat([df_fund, df_services], ignore_index=True)
 
 if not df_all.empty:
-    df_all['reserv_date_dt'] = pd.to_datetime(df_all['reserv_date'], unit='ms')
+    df_all['reserv_date_dt'] = pd.to_datetime(df_all['reserv_date'] + 7*3600*1000, unit='ms')
 
 st.subheader("📊 Выручка по секциям")
 if not df_fund.empty:

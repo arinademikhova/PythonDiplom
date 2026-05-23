@@ -22,6 +22,8 @@ if df_fund.empty and df_services.empty:
 
 df_all = pd.concat([df_fund, df_services], ignore_index=True)
 
+#df_all['reserv_date_dt'] = pd.to_datetime(df_all['reserv_date'] + 7*3600*1000, unit='ms')
+
 #колво всей выручки и гостей
 total_revenue = df_all['realprice'].sum()
 total_guests = df_fund['howadult'].sum() + df_fund['howteenager'].sum() + df_fund['howchild'].sum()

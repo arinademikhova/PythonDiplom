@@ -22,9 +22,9 @@ if df_fund.empty and df_services.empty:
 
 df_all = pd.concat([df_fund, df_services], ignore_index=True)
 
-df_all = df_all.sort_values(by='reserv_date', ascending=True)
+df_all = df_all.sort_values(by='reserv_date', ascending=True).reset_index(drop=True)
 
-df_all['reserv_date_dt'] = pd.to_datetime(df_all['reserv_date'], unit='ms').dt.strftime('%d.%m.%Y')
+df_all['reserv_date_dt'] = pd.to_datetime(df_all['reserv_date'] + 7*3600*1000, unit='ms').dt.strftime('%d.%m.%Y')
 
 def status_label(row):
     if row['paid'] >= row['realprice']:
@@ -60,7 +60,7 @@ st.divider()
 
 if not df_fund.empty:
     st.subheader("🏠 Размещение (номера)")
-    df_fund_all = df_fund.sort_values(by='reserv_date', ascending=True)
+    df_fund_all = df_fund.sort_values(by=['reserv_date', 'time'], ascending=True).reset_index(drop=True)
     df_fund_all['reserv_date_dt'] = pd.to_datetime(df_fund_all['reserv_date'] + 7 * 3600 * 1000, unit='ms').dt.strftime('%d.%m.%Y')
 
     fund_table = df_fund_all[['reservation_id', 'reserv_date_dt', 'item_name', 'realprice', 'paid']].copy()
@@ -89,7 +89,7 @@ st.divider()
 
 if not df_services.empty:
     st.subheader("🎯 Услуги")
-    df_services_all = df_services.sort_values(by='reserv_date', ascending=True)
+    df_services_all = df_services.sort_values(by=['reserv_date', 'timefrom'], ascending=True).reset_index(drop=True)
     df_services_all['reserv_date_dt'] = pd.to_datetime(df_services_all['reserv_date'] + 7 * 3600 * 1000,unit='ms').dt.strftime('%d.%m.%Y')
 
     services_table = df_services_all[['reservation_id', 'reserv_date_dt', 'item_name', 'realprice', 'paid']].copy()
