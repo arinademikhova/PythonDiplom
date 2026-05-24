@@ -22,19 +22,25 @@ if df_fund.empty and df_services.empty:
 
 df_all = pd.concat([df_fund, df_services], ignore_index=True)
 
-if not df_all.empty:
-    df_all['reserv_date_dt'] = pd.to_datetime(df_all['reserv_date'] + 7*3600*1000, unit='ms')
+df_fund_paid = df_fund[df_fund['paid'] > 0]
+df_services_paid = df_services[df_services['paid'] > 0]
+df_all_paid = pd.concat([df_fund_paid, df_services_paid], ignore_index=True)
+
+if not df_all_paid.empty:
+    df_all_paid['reserv_date_dt'] = pd.to_datetime(df_all_paid['reserv_date'] + 7*3600*1000, unit='ms')
+else:
+    df_all_paid = pd.DataFrame()
 
 st.subheader("📊 Выручка по секциям")
-if not df_fund.empty:
-    rev_by_section = df_fund.groupby('section_name')['realprice'].sum().reset_index()
+if not df_fund_paid.empty:
+    rev_by_section = df_fund_paid.groupby('section_name')['paid'].sum().reset_index()
     fig = px.pie(
         rev_by_section,
-        values='realprice',
+        values='paid',
         names='section_name',
         hole=0.4,
-        labels={'section_name': 'Секция', 'realprice': 'Выручка (₽)'},
-        hover_data={'realprice': ':,.0f'}
+        labels={'section_name': 'Секция', 'paid': 'Выручка (₽)'},
+        hover_data={'paid': ':,.0f'}
     )
     fig.update_traces(
         hovertemplate='<b>%{label}</b><br>Выручка: %{value:,.0f} ₽<extra></extra>'
@@ -46,8 +52,8 @@ else:
 st.divider()
 
 st.subheader("🛒 Использование услуг")
-if not df_services.empty:
-    usage = df_services.groupby('service_type_name').size().reset_index(name='count')
+if not df_services_paid.empty:
+    usage = df_services_paid.groupby('service_type_name').size().reset_index(name='count')
     fig = px.bar(
         usage,
         x='service_type_name',
@@ -66,8 +72,8 @@ else:
 st.divider()
 
 st.subheader("🏠 Использование размещения (по секциям)")
-if not df_fund.empty:
-    fund_usage = df_fund.groupby('section_name').size().reset_index(name='count')
+if not df_fund_paid.empty:
+    fund_usage = df_fund_paid.groupby('section_name').size().reset_index(name='count')
     fig = px.bar(
         fund_usage,
         x='section_name',
@@ -84,8 +90,8 @@ else:
 st.divider()
 
 st.subheader("📈 Динамика посещаемости")
-if not df_all.empty:
-    daily = df_all.groupby('reserv_date_dt')['reservation_id'].nunique().reset_index(name='bookings')
+if not df_all_paid.empty:
+    daily = df_all_paid.groupby('reserv_date_dt')['reservation_id'].nunique().reset_index(name='bookings')
     fig = px.line(
         daily,
         x='reserv_date_dt',
