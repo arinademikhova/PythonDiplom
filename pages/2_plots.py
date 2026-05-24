@@ -65,7 +65,25 @@ else:
 
 st.divider()
 
-st.subheader("📈 Динамика посещаемости (уникальные бронирования в день)")
+st.subheader("🏠 Использование размещения (по секциям)")
+if not df_fund.empty:
+    fund_usage = df_fund.groupby('section_name').size().reset_index(name='count')
+    fig = px.bar(
+        fund_usage,
+        x='section_name',
+        y='count',
+        labels={'section_name': 'Секция', 'count': 'Количество бронирований номеров'},
+        text_auto=True
+    )
+    fig.update_traces(hovertemplate='<b>%{x}</b><br>Бронирований: %{y}<extra></extra>')
+    fig.update_layout(xaxis_tickangle=-45)
+    st.plotly_chart(fig, use_container_width=True)
+else:
+    st.info("Нет данных по размещению")
+
+st.divider()
+
+st.subheader("📈 Динамика посещаемости")
 if not df_all.empty:
     daily = df_all.groupby('reserv_date_dt')['reservation_id'].nunique().reset_index(name='bookings')
     fig = px.line(
