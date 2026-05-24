@@ -117,14 +117,16 @@ def load_services_data(date_from, date_to, hotel=None, sections=None, service_ty
     conn.close()
     return df
 
-#def get_total_rooms_count():
+def get_all_sections_with_room_count():
     conn = get_connection()
-    total = pd.read_sql("SELECT COUNT(*) as cnt FROM rooms WHERE deleted = 0", conn).iloc[0]['cnt']
+    query = """
+        SELECT s.name as section_name, COALESCE(COUNT(r.room_id), 0) as total_rooms
+        FROM sections s
+        LEFT JOIN rooms r ON s.section_id = r.section_id AND r.deleted = 0 AND r.enable = 1
+        WHERE s.deleted = 0
+        GROUP BY s.section_id
+        ORDER BY s.name
+    """
+    df = pd.read_sql(query, conn)
     conn.close()
-    return total
-
-def get_total_rooms_count():
-    conn = get_connection()
-    total = pd.read_sql("SELECT COUNT(*) as cnt FROM rooms WHERE deleted = 0 AND enable = 1", conn).iloc[0]['cnt']
-    conn.close()
-    return total
+    return df
