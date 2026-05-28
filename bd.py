@@ -130,3 +130,22 @@ def get_all_sections_with_room_count():
     df = pd.read_sql(query, conn)
     conn.close()
     return df
+
+def get_sections_by_hotel(hotel_name):
+    """Возвращает список секций для указанного отеля.
+       Если hotel_name == 'Все', возвращает все секции."""
+    conn = get_connection()
+    if hotel_name == "Все":
+        query = "SELECT name FROM sections WHERE deleted = 0 ORDER BY name"
+        df = pd.read_sql(query, conn)
+    else:
+        query = """
+            SELECT s.name
+            FROM sections s
+            JOIN hotels h ON s.hotel_id = h.hotel_id
+            WHERE h.name = ? AND s.deleted = 0
+            ORDER BY s.name
+        """
+        df = pd.read_sql(query, conn, params=(hotel_name,))
+    conn.close()
+    return df['name'].tolist()

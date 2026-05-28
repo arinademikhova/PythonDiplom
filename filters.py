@@ -1,10 +1,9 @@
 import streamlit as st
 from datetime import datetime, timedelta
 from config import DEFAULT_DAYS_BACK
-from bd import get_list_hotels, get_list_sections, get_list_service_types, load_fund_data, load_services_data
+from bd import get_list_hotels, get_list_sections, get_list_service_types, load_fund_data, load_services_data, get_sections_by_hotel
 
 def render_and_load_data():
-
     if "filters_applied" not in st.session_state:
         st.session_state.filters_applied = False
         st.session_state.date_from = datetime.now() - timedelta(days=DEFAULT_DAYS_BACK)
@@ -14,6 +13,9 @@ def render_and_load_data():
         st.session_state.service_types = []
         st.session_state.df_fund = None
         st.session_state.df_services = None
+        st.session_state.prev_hotel = "Все"
+        st.session_state.available_sections = get_sections_by_hotel("Все")
+
 
     with st.sidebar:
         st.header("🔍 Фильтры")
@@ -22,13 +24,30 @@ def render_and_load_data():
         date_to = st.date_input("До", st.session_state.date_to)
 
         hotels_list = ["Все"] + get_list_hotels()
-        hotel = st.selectbox(
+        current_hotel = st.selectbox(
             "Отель", hotels_list,
-            index=hotels_list.index(st.session_state.hotel) if st.session_state.hotel in hotels_list else 0
+            index=hotels_list.index(st.session_state.hotel) if st.session_state.hotel in hotels_list else 0,
+            key="hotel_select"
         )
 
-        sections = st.multiselect("Секции парка", get_list_sections(), default=st.session_state.sections)
-        service_types = st.multiselect("Типы услуг", get_list_service_types(), default=st.session_state.service_types)
+        if current_hotel != st.session_state.prev_hotel:
+            st.session_state.prev_hotel = current_hotel
+            st.session_state.available_sections = get_sections_by_hotel(current_hotel)
+            st.session_state.sections = []
+            st.session_state.service_types = []
+            st.rerun()
+
+        sections = st.multiselect(
+            "Секции парка",
+            st.session_state.available_sections,
+            default=st.session_state.sections
+        )
+
+        service_types = st.multiselect(
+            "Типы услуг",
+            get_list_service_types(),
+            default=st.session_state.service_types
+        )
 
         col1, col2 = st.columns(2)
         with col1:
@@ -36,18 +55,17 @@ def render_and_load_data():
                 # Сохраняем выбранные значения
                 st.session_state.date_from = date_from
                 st.session_state.date_to = date_to
-                st.session_state.hotel = hotel
+                st.session_state.hotel = current_hotel
                 st.session_state.sections = sections
                 st.session_state.service_types = service_types
                 st.session_state.filters_applied = True
 
-                # Загружаем данные
                 with st.spinner("Загрузка данных..."):
                     st.session_state.df_fund = load_fund_data(
-                        date_from, date_to, hotel, sections
+                        date_from, date_to, current_hotel, sections
                     )
                     st.session_state.df_services = load_services_data(
-                        date_from, date_to, hotel, sections, service_types
+                        date_from, date_to, current_hotel, sections, service_types
                     )
                 st.rerun()
         with col2:
@@ -60,4 +78,6 @@ def render_and_load_data():
                 st.session_state.service_types = []
                 st.session_state.df_fund = None
                 st.session_state.df_services = None
+                st.session_state.prev_hotel = "Все"
+                st.session_state.available_sections = get_sections_by_hotel("Все")
                 st.rerun()
