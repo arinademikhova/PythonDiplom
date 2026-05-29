@@ -1,2 +1,9 @@
 [client]
-showSidebarNavigation = false
+showSidebarNavigation = false #не показывать страницы
+
+[theme]
+base = "light" #тема
+primaryColor = "#800020"    #бордовый
+backgroundColor = "#FFFFFF" #белый фон
+secondaryBackgroundColor = "#F5F5F5" #cветлосерый для сайдбара
+textColor = "#2C3E50"       #для текста

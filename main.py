@@ -2,8 +2,11 @@ import streamlit as st
 from filters import render_and_load_data
 from navigation import render_navigation
 
+with open("assets/style.css", "r", encoding="utf-8") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
 st.set_page_config(page_title="Аналитика Эко-парк Адмирал", layout="wide")
-st.markdown('<h1 class="main-header">🏕 Эко-парк "Адмирал"</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="main-header">Эко-парк "Адмирал"</h1>', unsafe_allow_html=True)
 
 render_and_load_data()
 

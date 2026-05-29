@@ -6,7 +6,7 @@ from filters import render_and_load_data
 
 render_and_load_data()
 
-st.header("📋 Детальный отчёт по бронированиям")
+st.header("Детальный отчёт по бронированиям")
 
 if st.session_state.get("df_fund") is None or st.session_state.get("df_services") is None:
     st.warning("Сначала примените фильтры на главной странице.")
@@ -28,11 +28,11 @@ df_all['reserv_date_dt'] = pd.to_datetime(df_all['reserv_date'] + 7*3600*1000, u
 
 def status_label(row):
     if row['paid'] >= row['realprice']:
-        return "✅ Оплачено полностью"
+        return "Оплачено полностью"
     elif row['paid'] > 0:
-        return "⚠️ Частичная оплата"
+        return "Частичная оплата"
     else:
-        return "❌ Не оплачено"
+        return "Не оплачено"
 
 table_df = df_all[['reservation_id', 'reserv_date_dt', 'item_name', 'realprice', 'paid']].copy()
 table_df['Статус оплаты'] = table_df.apply(status_label, axis=1)
@@ -47,7 +47,7 @@ final_columns = ['ID', 'Дата', 'Объект/Услуга', 'Стоимос�
 
 st.dataframe(table_df[final_columns], use_container_width=True, height=400)
 
-with st.expander("📥 Экспорт общей таблицы"):
+with st.expander("Экспорт общей таблицы"):
     csv_data = table_df[final_columns].to_csv(index=False).encode('utf-8')
     st.download_button("Скачать как CSV", csv_data, "report.csv", "text/csv")
 
@@ -59,7 +59,7 @@ with st.expander("📥 Экспорт общей таблицы"):
 st.divider()
 
 if not df_fund.empty:
-    st.subheader("🏠 Размещение (номера)")
+    st.subheader("Размещение (номера)")
     df_fund_all = df_fund.sort_values(by=['reserv_date', 'time'], ascending=True).reset_index(drop=True)
     df_fund_all['reserv_date_dt'] = pd.to_datetime(df_fund_all['reserv_date'] + 7 * 3600 * 1000, unit='ms').dt.strftime('%d.%m.%Y')
 
@@ -75,7 +75,7 @@ if not df_fund.empty:
     fund_columns = ['ID', 'Дата', 'Объект (номер)', 'Стоимость (₽)', 'Оплачено (₽)', 'Статус оплаты']
     st.dataframe(fund_table[fund_columns], use_container_width=True, height=300)
 
-    with st.expander("📥 Экспорт таблицы размещения"):
+    with st.expander("Экспорт таблицы размещения"):
         csv_fund = fund_table[fund_columns].to_csv(index=False).encode('utf-8')
         st.download_button("Скачать CSV", csv_fund, "fund_report.csv", "text/csv")
         output_fund = BytesIO()
@@ -88,7 +88,7 @@ else:
 st.divider()
 
 if not df_services.empty:
-    st.subheader("🎯 Услуги")
+    st.subheader("Услуги")
     df_services_all = df_services.sort_values(by=['reserv_date', 'timefrom'], ascending=True).reset_index(drop=True)
     df_services_all['reserv_date_dt'] = pd.to_datetime(df_services_all['reserv_date'] + 7 * 3600 * 1000,unit='ms').dt.strftime('%d.%m.%Y')
 
@@ -104,7 +104,7 @@ if not df_services.empty:
     services_columns = ['ID', 'Дата', 'Услуга', 'Стоимость (₽)', 'Оплачено (₽)', 'Статус оплаты']
     st.dataframe(services_table[services_columns], use_container_width=True, height=300)
 
-    with st.expander("📥 Экспорт таблицы услуг"):
+    with st.expander("Экспорт таблицы услуг"):
         csv_serv = services_table[services_columns].to_csv(index=False).encode('utf-8')
         st.download_button("Скачать CSV", csv_serv, "services_report.csv", "text/csv")
         output_serv = BytesIO()

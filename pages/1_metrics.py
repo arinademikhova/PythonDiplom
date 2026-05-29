@@ -6,7 +6,7 @@ from bd import get_all_sections_with_room_count
 
 render_and_load_data()
 
-st.header("📊 Ключевые показатели")
+st.header("Ключевые показатели")
 
 if st.session_state.get("df_fund") is None or st.session_state.get("df_services") is None:
     st.warning("Сначала примените фильтры на главной странице.")

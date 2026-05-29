@@ -132,8 +132,6 @@ def get_all_sections_with_room_count():
     return df
 
 def get_sections_by_hotel(hotel_name):
-    """Возвращает список секций для указанного отеля.
-       Если hotel_name == 'Все', возвращает все секции."""
     conn = get_connection()
     if hotel_name == "Все":
         query = "SELECT name FROM sections WHERE deleted = 0 ORDER BY name"

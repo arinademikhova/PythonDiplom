@@ -6,7 +6,7 @@ from filters import render_and_load_data
 
 render_and_load_data()
 
-st.header("📈 Аналитические графики")
+st.header("Аналитические графики")
 
 if st.session_state.get("df_fund") is None or st.session_state.get("df_services") is None:
     st.warning("Данные не загружены. Примените фильтры на главной странице.")
@@ -31,7 +31,7 @@ if not df_all_paid.empty:
 else:
     df_all_paid = pd.DataFrame()
 
-st.subheader("📊 Выручка по секциям")
+st.subheader("Выручка по секциям")
 if not df_fund_paid.empty:
     rev_by_section = df_fund_paid.groupby('section_name')['paid'].sum().reset_index()
     fig = px.pie(
@@ -51,7 +51,7 @@ else:
 
 st.divider()
 
-st.subheader("🛒 Использование услуг")
+st.subheader("Использование услуг")
 if not df_services_paid.empty:
     usage = df_services_paid.groupby('service_type_name').size().reset_index(name='count')
     fig = px.bar(
@@ -71,7 +71,7 @@ else:
 
 st.divider()
 
-st.subheader("🏠 Использование размещения (по секциям)")
+st.subheader("Использование размещения (по секциям)")
 if not df_fund_paid.empty:
     fund_usage = df_fund_paid.groupby('section_name').size().reset_index(name='count')
     fig = px.bar(
@@ -89,7 +89,7 @@ else:
 
 st.divider()
 
-st.subheader("📈 Динамика посещаемости")
+st.subheader("Динамика посещаемости")
 if not df_all_paid.empty:
     daily = df_all_paid.groupby('reserv_date_dt')['reservation_id'].nunique().reset_index(name='bookings')
     fig = px.line(

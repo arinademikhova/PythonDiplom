@@ -6,7 +6,7 @@ from bd import get_all_sections_with_room_count
 from io import BytesIO
 
 render_and_load_data()
-st.header("📊 Аналитика по секциям")
+st.header("Аналитика по секциям")
 
 if st.session_state.get("df_fund") is None:
     st.warning("Сначала примените фильтры на главной странице.")
@@ -79,7 +79,7 @@ else:
     st.subheader("Количество броней по секциям (оплаченные / неоплаченные брони)")
     st.dataframe(df_result, use_container_width=True, hide_index=True)
 
-with st.expander("📥 Экспорт данных"):
+with st.expander("Экспорт данных"):
     csv_data = df_result.to_csv(index=False).encode('utf-8')
     st.download_button("Скачать CSV", csv_data, "sections_report.csv", "text/csv")
     output = BytesIO()
@@ -89,7 +89,7 @@ with st.expander("📥 Экспорт данных"):
 
 st.divider()
 
-st.subheader("🎯 Использование услуг (оплаченные / неоплаченные брони)")
+st.subheader("Использование услуг (оплаченные / неоплаченные брони)")
 df_services_paid = df_services[df_services['paid'] > 0]
 df_services_unpaid = df_services[df_services['paid'] == 0]
 
@@ -108,7 +108,7 @@ df_result_services = df_result_services[['Тип услуги', 'Оплачен�
 
 st.dataframe(df_result_services, use_container_width=True, hide_index=True)
 
-with st.expander("📥 Экспорт данных по услугам"):
+with st.expander("Экспорт данных по услугам"):
     csv_services = df_result_services.to_csv(index=False).encode('utf-8')
     st.download_button("Скачать CSV (услуги)", csv_services, "services_report.csv", "text/csv")
     output_services = BytesIO()

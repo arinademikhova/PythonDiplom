@@ -18,7 +18,7 @@ def render_and_load_data():
 
 
     with st.sidebar:
-        st.header("🔍 Фильтры")
+        st.header("Фильтры")
 
         date_from = st.date_input("Период бронирования (От)", st.session_state.date_from)
         date_to = st.date_input("До", st.session_state.date_to)
