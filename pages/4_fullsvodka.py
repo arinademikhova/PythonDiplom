@@ -1,11 +1,10 @@
 import streamlit as st
 import pandas as pd
-from navigation import render_navigation
 from filters import render_and_load_data
 from bd import get_all_sections_with_room_count
 from io import BytesIO
 
-render_and_load_data()
+render_and_load_data(current_page="fullsvodka")
 st.header("Аналитика по секциям")
 
 if st.session_state.get("df_fund") is None:
@@ -17,7 +16,6 @@ df_services = st.session_state.df_services
 
 if df_fund.empty:
     st.warning("Нет данных за выбранный период.")
-    render_navigation('fullsvodka')
     st.stop()
 
 date_from = st.session_state.date_from
@@ -117,4 +115,3 @@ with st.expander("Экспорт данных по услугам"):
     st.download_button("Скачать Excel (услуги)", output_services.getvalue(), "services_report.xlsx")
 
 
-render_navigation('fullsvodka')

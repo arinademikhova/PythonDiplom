@@ -1,10 +1,9 @@
 import streamlit as st
 import pandas as pd
 from io import BytesIO
-from navigation import render_navigation
 from filters import render_and_load_data
 
-render_and_load_data()
+render_and_load_data(current_page="table")
 
 st.header("Детальный отчёт по бронированиям")
 
@@ -17,7 +16,6 @@ df_services = st.session_state.df_services
 
 if df_fund.empty and df_services.empty:
     st.warning("Нет данных за выбранный период.")
-    render_navigation('table')
     st.stop()
 
 df_all = pd.concat([df_fund, df_services], ignore_index=True)
@@ -114,4 +112,3 @@ if not df_services.empty:
 else:
     st.info("Нет данных по услугам за выбранный период.")
 
-render_navigation('table')

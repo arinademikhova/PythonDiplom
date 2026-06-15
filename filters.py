@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from config import DEFAULT_DAYS_BACK
 from bd import get_list_hotels, get_list_sections, get_list_service_types, load_fund_data, load_services_data, get_sections_by_hotel
 
-def render_and_load_data():
+def render_and_load_data(current_page="main"):
     if "filters_applied" not in st.session_state:
         st.session_state.filters_applied = False
         st.session_state.date_from = datetime.now() - timedelta(days=DEFAULT_DAYS_BACK)
@@ -15,7 +15,6 @@ def render_and_load_data():
         st.session_state.df_services = None
         st.session_state.prev_hotel = "Все"
         st.session_state.available_sections = get_sections_by_hotel("Все")
-
 
     with st.sidebar:
         st.header("Фильтры")
@@ -52,7 +51,6 @@ def render_and_load_data():
         col1, col2 = st.columns(2)
         with col1:
             if st.button("Применить фильтры", type="primary"):
-                # Сохраняем выбранные значения
                 st.session_state.date_from = date_from
                 st.session_state.date_to = date_to
                 st.session_state.hotel = current_hotel
@@ -81,3 +79,35 @@ def render_and_load_data():
                 st.session_state.prev_hotel = "Все"
                 st.session_state.available_sections = get_sections_by_hotel("Все")
                 st.rerun()
+        # ========= НАВИГАЦИЯ В САЙДБАРЕ =========
+        st.divider()
+        st.subheader("Навигация")
+
+        pages = {
+            "Главная": "main.py",
+            "Метрики": "pages/1_metrics.py",
+            "Графики": "pages/2_plots.py",
+            "Детальный отчёт": "pages/3_table.py",
+            "Сводка загрузки": "pages/4_fullsvodka.py"
+        }
+
+        active_page = current_page
+
+        for name, path in pages.items():
+            # Определяем, активна ли эта страница
+            is_active = (
+                    (active_page == "main" and path == "main.py") or
+                    (active_page == "metrics" and path == "pages/1_metrics.py") or
+                    (active_page == "plots" and path == "pages/2_plots.py") or
+                    (active_page == "table" and path == "pages/3_table.py") or
+                    (active_page == "fullsvodka" and path == "pages/4_fullsvodka.py")
+            )
+
+            if is_active:
+                # Активная страница — кнопка с бордовым фоном
+                if st.button(name, key=f"nav_{name}", use_container_width=True, type="primary"):
+                    st.switch_page(path)
+            else:
+                # Обычная кнопка
+                if st.button(name, key=f"nav_{name}", use_container_width=True):
+                    st.switch_page(path)

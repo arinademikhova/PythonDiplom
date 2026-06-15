@@ -1,10 +1,9 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-from navigation import render_navigation
 from filters import render_and_load_data
 
-render_and_load_data()
+render_and_load_data(current_page="plots")
 
 st.header("Аналитические графики")
 
@@ -17,7 +16,6 @@ df_services = st.session_state.df_services
 
 if df_fund.empty and df_services.empty:
     st.warning("Нет данных за выбранный период.")
-    render_navigation('plots')
     st.stop()
 
 df_all = pd.concat([df_fund, df_services], ignore_index=True)
@@ -107,4 +105,3 @@ if not df_all_paid.empty:
 else:
     st.info("Нет данных для динамики")
 
-render_navigation('plots')
