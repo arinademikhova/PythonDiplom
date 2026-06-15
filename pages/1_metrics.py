@@ -22,6 +22,7 @@ df_fund_paid = df_fund[df_fund['paid'] > 0]
 df_services_paid = df_services[df_services['paid'] > 0]
 df_all = pd.concat([df_fund, df_services], ignore_index=True)
 
+#колво всей выручки и гостей
 # total_revenue временно скрыта
 # total_revenue = df_all['paid'].sum()
 total_guests = df_fund_paid['howadult'].sum() + df_fund_paid['howteenager'].sum() + df_fund_paid['howchild'].sum()
@@ -49,4 +50,5 @@ with col3:
     st.metric("Всего бронирований", f"{total_bookings:,}")
 with col4:
     # Пустая заглушка или можно оставить свободное место
+    # st.metric("Общая выручка (₽)", f"{total_revenue:,.0f}")
     st.empty()
